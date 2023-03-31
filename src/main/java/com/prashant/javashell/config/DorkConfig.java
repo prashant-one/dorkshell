@@ -37,8 +37,8 @@ public class DorkConfig {
          List<String> firstData = extractData(seacElements, type);
          searchData.addAll(firstData);
         for(int i=0; i<count-1;i++){
-            Thread.sleep(5000);
-            System.out.println("=========Extracting page: =========");
+          Thread.sleep(5000);
+          System.out.println("=========Extracting page: =========");
           List<String> data = nextSearchURL(seacElements,type,i+2);
           searchData.addAll(data);
         }
