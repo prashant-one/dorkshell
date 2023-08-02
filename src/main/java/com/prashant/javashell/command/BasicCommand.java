@@ -1,13 +1,8 @@
 package com.prashant.javashell.command;
 
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.shell.standard.ShellComponent;
 import org.springframework.shell.standard.ShellMethod;
 import org.springframework.shell.standard.ShellOption;
-
-import com.prashant.javashell.config.DorkConfig;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -16,14 +11,10 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.List;
 import java.util.stream.Stream;
 
 @ShellComponent
 public class BasicCommand {
-
-    @Autowired
-    private DorkConfig dorkConfig;
 
     @ShellMethod("Download a file using command download --url https://url.file.ext")
     public void download(@ShellOption("--url") URL url) throws IOException{
@@ -76,19 +67,4 @@ public class BasicCommand {
       }
     }
 
-    @ShellMethod("Dork Google to find files with given extension Example: dork java pdf")
-    public void dork(
-        @ShellOption({"--search","-s"})String search,
-        @ShellOption({"--type","-t"}) String type) throws IOException{
-        try{
-        System.out.println("Search: "+search +" type: "+type);
-        Document doc = Jsoup.connect("https://www.google.com/search?q="+search+" "+"ext:"+type).get();  
-        List<String> result = dorkConfig.getData(doc, type,2);
-        result.forEach(System.out::println); 
-        } catch (Exception e) {
-            e.printStackTrace();
-      }  
-    }   
-     
-    
 }
