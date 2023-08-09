@@ -1,6 +1,7 @@
 package com.prashant.javashell.action;
 
 import com.prashant.javashell.constant.Constant;
+import jakarta.validation.constraints.NotNull;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
@@ -40,7 +41,7 @@ public class DorkAction {
         return data;
     }
 
-    private List<String> collectData(Elements elements,String type){
+    public List<String> collectData(Elements elements,String type){
         if(type!=null) {
             return elements.stream().map(it -> it.attr("href"))
                     .filter(it -> it.startsWith("http") && it.endsWith(type))
@@ -52,9 +53,9 @@ public class DorkAction {
 
     private List<String> collectNextLinks(Elements elements,int count){
        return elements.stream()
-                .map(it -> it.attr("href"))
-                .filter(it -> it.contains("&start=" + count + "0&sa="))
-                .map(it -> Constant.GOOGLE_URL + it)
+                .map((@NotNull var it) -> it.attr("href"))
+                .filter((@NotNull var it) -> it.contains("&start=" + count + "0&sa="))
+                .map((@NotNull var it) -> Constant.GOOGLE_URL + it)
                 .distinct()
                 .collect(Collectors.toList());
     }
@@ -90,7 +91,7 @@ public class DorkAction {
                     data.addAll(result);
                 }
             }
-            data.forEach(System.out::println);
+          //  data.forEach(System.out::println);
         }catch (Exception e){
             System.out.println(e.getMessage());
         }
