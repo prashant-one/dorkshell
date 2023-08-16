@@ -8,13 +8,12 @@ import org.jsoup.select.Elements;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.net.MalformedURLException;
-import java.net.URISyntaxException;
 import java.sql.Timestamp;
 import java.time.Instant;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 @Component
@@ -25,63 +24,41 @@ public class SpiderAction {
     private DorkAction dorkAction;
     @Autowired
     private BasicCommand basicCommand;
+    Pattern emailPattern = Pattern.compile("[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\\.[a-zA-Z0-9-.]+");
     private Set<String> allLinks;
     private Set<String> allImages;
     private Set<String> allData;
+    private Set<String> allEmails;
     private int counter=0;
     private String urlCheck="";
-    private String linksFileName="";
-    private String imgFileName="";
-    private String allDataFileName="";
 
-
-    public String getSpiderData(String url,String searchCommand)  {
-        try {
-            List<String> links = getSpiderLinks(url, null);
-
-        }catch (Exception e){
-            System.out.println(e);
-        }
-        return null;
-    }
-
-//    public List<String> getAllDistinctLink(String url){
-//        getSpiderLinks(url,null);
-//    }
-
-    public List<String> getSpiderLinks(String url,String type)  {
-        List<String> data =null;
-        try {
-            if (utils.isValidURL(url)) {
-                Document doc = Jsoup.connect(url).get();
-                Elements elements = doc.getAllElements().select("a[href]");
-                data = dorkAction.collectData(elements, type);
-                //data.forEach(System.out::println);
-            }
-        }catch (Exception e){
-            System.out.println(e);
-        }
-        return data;
-    }
 
     public void getAllDistinctLink(String url) {
+        String allDataFileName="";
+        String imgFileName="";
+        String linksFileName="";
+        String emailsFileName="";
         try {
             if (utils.isValidURL(url)) {
                 urlCheck = url;
                 allLinks = new HashSet<>();
                 allImages = new HashSet<>();
                 allData = new HashSet<>();
+                allEmails = new HashSet<>();
                 counter = 0;
                 linksFileName = String.valueOf("links_" + Timestamp.from(Instant.now())) + ".txt";
                 imgFileName = String.valueOf("images_" + Timestamp.from(Instant.now())) + ".txt";
                 allDataFileName = String.valueOf("allData_" + Timestamp.from(Instant.now())) + ".txt";
+                emailsFileName = String.valueOf("emails_" + Timestamp.from(Instant.now())) + ".txt";
                 System.out.println("Writing links on file " + linksFileName);
                 Set<String> linksResult = collectLinks(url);
                 basicCommand.nano(linksFileName, utils.convertToString(linksResult));
                 basicCommand.nano(imgFileName, utils.convertToString(allImages));
                 basicCommand.nano(allDataFileName, utils.convertToString(allData));
+                basicCommand.nano(emailsFileName, utils.convertToString(allEmails));
+            }else {
+                System.out.println("Error : Please enter a valid url");
             }
-            System.out.println("Error : Please enter a valid url");
         }catch (Exception e){
             System.out.println(e.getMessage());
         }
@@ -92,13 +69,14 @@ public class SpiderAction {
         try {
             if (utils.isValidURL(url)) {
                 Document doc = Jsoup.connect(url).ignoreContentType(true).get();
-                //Elements elements = doc.getAllElements().select("a[href]");
                 Set<String> allResult=filterAllData(doc);
                 allData.addAll(allResult);
                 Set<String> linksResult = filterLinks(doc);
                 allLinks.addAll(linksResult);
                 Set<String> imgResult =filterImages(doc);
                 allImages.addAll(imgResult);
+                Set<String> emailsResult=filterEmails(doc);
+                allEmails.addAll(emailsResult);
                 links = allLinks.toArray(new String[allLinks.size()]);
                 System.out.println("Total links crawled ==> "+ links.length);
             }
@@ -132,6 +110,15 @@ public class SpiderAction {
                 .filter(it -> it.startsWith("http"))
                 .filter(it -> it.contains(urlCheck))
                 .collect(Collectors.toSet());
+    }
+
+    public Set<String> filterEmails(Document doc){
+        HashSet<String> emails=new HashSet<>();
+        Matcher emailMatcher = emailPattern.matcher(doc.body().html());
+        while(emailMatcher.find()){
+            emails.add(emailMatcher.group());
+        }
+        return emails;
     }
 
 }

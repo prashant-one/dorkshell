@@ -23,18 +23,28 @@ public class BasicCommand {
     private Utils dorkUtils;
 
     @ShellMethod("Download a file using command download --url https://url.file.ext")
-    public void download(@ShellOption("--url") URL url) throws IOException{
-        String fileName = url.toString();
-        fileName = fileName.substring(fileName.lastIndexOf('/')+1);
-        try (InputStream in = url.openStream()) {
-            System.out.println("===================Downloading started==============");
-            Files.copy(in, Paths.get(fileName));
-            System.out.println("Downloaded ==> "+fileName);
-        } catch (Exception e) {
+    public void download(@ShellOption(value = {"-u","--url"}) String stringUrl,
+                         @ShellOption(value = {"-p","--filePath"})String filePath) throws IOException{
+        try {
+            if (dorkUtils.isValidURL(stringUrl)) {
+                String fileName = stringUrl;
+                URL url =new URL(stringUrl);
+                fileName = fileName.substring(fileName.lastIndexOf('/') + 1);
+                try (InputStream in = url.openStream()) {
+                    System.out.println("===================Downloading started==============");
+                    Files.copy(in, Paths.get(fileName));
+                    System.out.println("Downloaded ==> " + fileName);
+                    System.out.println("=============Download Completed==============");
+                } catch (Exception e) {
+                    System.out.println(e.getMessage());
+                }
+            }else {
+                System.out.println("Error: invalid url "+stringUrl);
+            }
+        }catch (Exception e){
             System.out.println(e.getMessage());
         }
-        System.out.println("=============Download Completed==============");
-        
+
     }
 
     /**
@@ -64,7 +74,7 @@ public class BasicCommand {
     }
     
     @ShellMethod("Create a file using nano command Example: nano --fileName fileName.txt Example data to write on file")
-    public void nano(@ShellOption("--fileName")String fileName,String data) {
+    public void nano(@ShellOption(value = {"--fileName","-f"})String fileName,String data) {
       try{
          Files.write(Paths.get(System.getProperty("user.dir")+"/"+fileName) , 
          data.getBytes(StandardCharsets.UTF_8));
@@ -74,7 +84,7 @@ public class BasicCommand {
     }
 
     @ShellMethod(key="l",value = "execute system command")
-    public void localCommand(@ShellOption(value = "--command",help = "l 'system command'")String command) {
+    public void localCommand(@ShellOption(value = {"--command","-c"},help = "l 'system command'")String command) {
         Process process = null;
         try{
             if(dorkUtils.detectOS().toLowerCase().contains("mac") || dorkUtils.detectOS().toLowerCase().contains("nux")) {

@@ -1,0 +1,2 @@
+$number=number
+$result=sum $number
