@@ -2,6 +2,8 @@ package com.prashant.javashell.command;
 
 import com.prashant.javashell.utils.Utils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.Resource;
 import org.springframework.shell.standard.ShellComponent;
 import org.springframework.shell.standard.ShellMethod;
 import org.springframework.shell.standard.ShellOption;
@@ -15,6 +17,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.List;
 import java.util.stream.Stream;
 
 @ShellComponent
@@ -22,9 +25,11 @@ public class BasicCommand {
     @Autowired
     private Utils dorkUtils;
 
+    @Value("classpath:db/dork-command-list.txt")
+    private Resource resource;
+
     @ShellMethod("Download a file using command download --url https://url.file.ext")
-    public void download(@ShellOption(value = {"-u","--url"}) String stringUrl,
-                         @ShellOption(value = {"-p","--filePath"})String filePath) throws IOException{
+    public void download(@ShellOption(value = {"-u","--url"}) String stringUrl) throws IOException{
         try {
             if (dorkUtils.isValidURL(stringUrl)) {
                 String fileName = stringUrl;
@@ -64,12 +69,20 @@ public class BasicCommand {
 
     @ShellMethod("Read file using cat command Example: cat /full/path.filename.txt")
     public void cat(String file) throws IOException{
-
-        try(Stream<String> lines =Files.lines(Paths.get(file))){
-            lines.forEach(System.out::println);
-
-        }catch (Exception e) {
-            System.out.println(e.getMessage());
+        if(file.startsWith("/",0)) {
+            try (Stream<String> lines = Files.lines(Paths.get(file))) {
+                lines.forEach(System.out::println);
+            } catch (Exception e) {
+                System.out.println(e.getMessage());
+            }
+        }else{
+            String filePath = System.getProperty("user.dir");
+            filePath=filePath+"/"+file;
+            try (Stream<String> lines = Files.lines(Paths.get(filePath))) {
+                lines.forEach(System.out::println);
+            } catch (Exception e) {
+                System.out.println(e.getMessage());
+            }
         }
     }
     
@@ -83,14 +96,15 @@ public class BasicCommand {
       }
     }
 
-    @ShellMethod(key="l",value = "execute system command")
-    public void localCommand(@ShellOption(value = {"--command","-c"},help = "l 'system command'")String command) {
+    @ShellMethod(key="syscmd",value = "Calls a system command")
+    public void localCommand(@ShellOption(optOut = true) List<String> command) {
         Process process = null;
+        String cmd = String.join(" ", command);
         try{
             if(dorkUtils.detectOS().toLowerCase().contains("mac") || dorkUtils.detectOS().toLowerCase().contains("nux")) {
-                process = Runtime.getRuntime().exec(command);
+                process = Runtime.getRuntime().exec(cmd);
             } if(dorkUtils.detectOS().toLowerCase().contains("win")) {
-                process = Runtime.getRuntime().exec("cmd /c "+command);
+                process = Runtime.getRuntime().exec("cmd /c "+cmd);
             }
             assert process != null;
             process.waitFor();
@@ -107,6 +121,27 @@ public class BasicCommand {
             assert process != null;
             process.destroy();
         }
+    }
+    @ShellMethod(key="list",value = "Find available dork query in the system ")
+    public String dorkList() {
+        try {
+            Path filepath = resource.getFile().toPath();
+            Files.lines(filepath).forEach(System.out::println);
+        } catch (IOException e) {
+            System.out.println(e.getMessage());
+        }
+        return null;
+    }
+
+    @ShellMethod(key="os",value = "Find available dork query in the system ")
+    public String checkOs() {
+        String os="";
+        try {
+            os=dorkUtils.detectOS();
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+        return os;
     }
 
 }

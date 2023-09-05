@@ -13,7 +13,7 @@ public class SpiderCommand {
 
     @Autowired
     private SpiderAction spiderAction;
-    @ShellMethod(key = "spider",value = "Dork Google to find files with given extension, Example: dork-type java pdf")
+    @ShellMethod(key = "spider",value = "spider command will work as crawler to retrieve website data")
     public void spider(@ShellOption(value = {"-u","--url"}) String url){
           spiderAction.getAllDistinctLink(url);
     }

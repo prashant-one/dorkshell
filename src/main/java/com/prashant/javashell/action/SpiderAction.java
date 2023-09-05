@@ -8,6 +8,7 @@ import org.jsoup.select.Elements;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.io.File;
 import java.sql.Timestamp;
 import java.time.Instant;
 import java.util.HashSet;
@@ -46,10 +47,12 @@ public class SpiderAction {
                 allData = new HashSet<>();
                 allEmails = new HashSet<>();
                 counter = 0;
-                linksFileName = String.valueOf("links_" + Timestamp.from(Instant.now())) + ".txt";
-                imgFileName = String.valueOf("images_" + Timestamp.from(Instant.now())) + ".txt";
-                allDataFileName = String.valueOf("allData_" + Timestamp.from(Instant.now())) + ".txt";
-                emailsFileName = String.valueOf("emails_" + Timestamp.from(Instant.now())) + ".txt";
+                File f1 = new File(System.getProperty("user.dir")+"/data");
+                f1.mkdir();
+                linksFileName = String.valueOf("data/links_" + Timestamp.from(Instant.now())) + ".txt";
+                imgFileName = String.valueOf("data/images_" + Timestamp.from(Instant.now())) + ".txt";
+                allDataFileName = String.valueOf("data/allData_" + Timestamp.from(Instant.now())) + ".txt";
+                emailsFileName = String.valueOf("data/emails_" + Timestamp.from(Instant.now())) + ".txt";
                 System.out.println("Writing links on file " + linksFileName);
                 Set<String> linksResult = collectLinks(url);
                 basicCommand.nano(linksFileName, utils.convertToString(linksResult));
@@ -68,7 +71,7 @@ public class SpiderAction {
         String[] links = new String[0];
         try {
             if (utils.isValidURL(url)) {
-                Document doc = Jsoup.connect(url).ignoreContentType(true).get();
+                Document doc = Jsoup.connect(url).ignoreContentType(true).ignoreHttpErrors(true).get();
                 Set<String> allResult=filterAllData(doc);
                 allData.addAll(allResult);
                 Set<String> linksResult = filterLinks(doc);
@@ -88,13 +91,6 @@ public class SpiderAction {
         }
         return allLinks;
     }
-    public Set<String> filterAllData(Document doc){
-        Elements elements = doc.getAllElements().select("a[href]");
-        return elements.stream().map(it -> it.attr("href"))
-                .filter(it -> it.startsWith("http"))
-                .filter(it -> it.contains(urlCheck))
-                .collect(Collectors.toSet());
-    }
     public Set<String> filterLinks(Document doc){
         Elements elements = doc.getAllElements().select("a[href]");
         return elements.stream().map(it -> it.attr("href"))
@@ -103,10 +99,17 @@ public class SpiderAction {
                 .filter(it->it.substring(it.lastIndexOf("/")+1).isEmpty())
                 .collect(Collectors.toSet());
     }
-
     public Set<String> filterImages(Document doc){
         Elements elements = doc.getAllElements().select("img[src]");
         return elements.stream().map(it -> it.attr("src"))
+                .filter(it -> it.startsWith("http"))
+                .filter(it -> it.contains(urlCheck))
+                .collect(Collectors.toSet());
+    }
+
+    public Set<String> filterAllData(Document doc){
+        Elements elements = doc.getAllElements().select("a[href]");
+        return elements.stream().map(it -> it.attr("href"))
                 .filter(it -> it.startsWith("http"))
                 .filter(it -> it.contains(urlCheck))
                 .collect(Collectors.toSet());

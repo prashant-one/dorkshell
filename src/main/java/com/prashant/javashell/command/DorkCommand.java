@@ -9,10 +9,6 @@ import org.springframework.shell.standard.ShellComponent;
 import org.springframework.shell.standard.ShellMethod;
 import org.springframework.shell.standard.ShellOption;
 
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-
 @ShellComponent
 public class DorkCommand {
     @Autowired
@@ -21,43 +17,31 @@ public class DorkCommand {
     @Autowired
     private Utils dorkUtils;
 
-    @Value("classpath:db/dork-command-list.txt")
-    private Resource resource;
 
-    @ShellMethod(key = "dork-type",value = "Dork Google to find files with given extension, Example: dork-type java pdf")
-    public String dork(@ShellOption({"-q","--query"}) String query,
-                                       @ShellOption(value = {"-t","--type"}) String type,
-                                       @ShellOption(value = {"-c","--count"},defaultValue = "1") int count){
-        return dorkUtils.convertToString(dorkAction.executeDork(query,type,count));
-
-    }
-
-    @ShellMethod(key = "dork",value = "Dork Google to find urls, Example: dork your query")
-    public String dorkQuery(@ShellOption(value={"-q","--query"},help="provide query in double quests") String query,
-                                            @ShellOption(value = {"-c","--count"},defaultValue = "1") int count){
-        return dorkUtils.convertToString(dorkAction.executeDorkQuery(query, count));
+    @ShellMethod(key = "dork-site", value = "Dork Google to find files with given extension, Example: dork-type java pdf")
+    public String dork(@ShellOption({"-u", "--url"}) String query,
+                       @ShellOption(value = {"-e", "--extension"}) String type,
+                       @ShellOption(value = {"-c", "--count"}, defaultValue = "1") int count,
+                       @ShellOption(value = {"-k", "--keyword"}, defaultValue = "") String key) {
+        return dorkUtils.convertToString(dorkAction.executeDork(query, type, count, key));
 
     }
 
-    @ShellMethod(key="list",value = "Find available dork query in the system ")
-    public String dorkList() {
-        try {
-            Path filepath = resource.getFile().toPath();
-           Files.lines(filepath).forEach(System.out::println);
-        } catch (IOException e) {
-            System.out.println(e.getMessage());
-        }
-        return null;
+    @ShellMethod(key = "dork", value = "Dork Google to find urls, Example: dork your query")
+    public String dorkQuery(@ShellOption(value = {"-q", "--query"}, help = "enter you search string") String query,
+                            @ShellOption(value = {"-c", "--count"}, defaultValue = "1", help = "for number of google pages search, Example: -c 5 ") int count,
+                            @ShellOption(value = {"-t", "--text"}, defaultValue = "__NO__", help = "for text result, Example: -t yes ") String text,
+                            @ShellOption(value = {"-s", "--sleep"}, defaultValue = "1000", help = "enter sleep time in millisecond for next search, Example -s 3000") int sleepTime) {
+        return dorkUtils.convertToString(dorkAction.executeDorkQuery(query, count, text, sleepTime));
+
     }
 
-    @ShellMethod(key="os",value = "Find available dork query in the system ")
-    public String checkOs() {
-        String os="";
-        try {
-           os=dorkUtils.detectOS();
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-        }
-        return os;
+    @ShellMethod(key = "dork-image", value = "Dork Google to find files with given extension, Example: dork-type java pdf")
+    public void dorkImage(@ShellOption(value = {"-k", "--keyword"}) String key,
+                            @ShellOption(value = {"-c", "--count"}, defaultValue = "1") int count,
+                            @ShellOption(value = {"-s", "--sleep"}, defaultValue = "1000") int sleep) {
+            dorkAction.dorkImageSearch(key, count, sleep);
+
     }
+
 }

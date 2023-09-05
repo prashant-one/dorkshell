@@ -1,2 +1,2 @@
-$number=number
-$result=sum $number
+links=dork nodejs 1
+result=download links

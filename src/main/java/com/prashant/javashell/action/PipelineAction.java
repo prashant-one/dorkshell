@@ -1,20 +1,26 @@
 package com.prashant.javashell.action;
 
+import com.prashant.javashell.command.BasicCommand;
+import com.prashant.javashell.command.DorkCommand;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
-import java.lang.reflect.Method;
 import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
 @Component
 public class PipelineAction {
+
+    @Autowired
+    private BasicCommand basicCommand;
+    @Autowired
+    private DorkCommand dorkCommand;
 
     public HashMap<String, String> compilePipeline() throws URISyntaxException, IOException {
         String filePath = "/Users/prashantkushwaha/IdeaProjects/javashell/src/main/resources/db/grammer.txt";
@@ -22,9 +28,8 @@ public class PipelineAction {
         HashMap<String, String> command = new HashMap<>();
         List<String> lines = Files.readAllLines(file);
         lines.forEach(it -> {
-            String[] variables = it.split("=");
-            command.put(variables[0], variables[1]);
-
+            String[] tokens = it.split("=");
+            command.put(tokens[0], tokens[1]);
         });
         command.forEach((k, v) -> {
             System.out.println(k + "  " + v);
@@ -32,32 +37,21 @@ public class PipelineAction {
         return command;
     }
 
-    public void compileData() throws URISyntaxException, IOException{
-        HashMap<String,List<String>> variableWithData= new HashMap<>();
+    public void compileData() throws Exception{
+        HashMap<String,String> variableWithData= new HashMap<>();
         HashMap<String, String> data = compilePipeline();
         data.forEach((variable,command)->{
-
-            Class c = null;
-            try {
-                c = Class.forName("com.prashant.javashell.action.Test");
-                Object obj = c.newInstance();
-//                String[] commands=command.split("$");
-                HashMap<String, String> cmd = getCommandWithVariables(command);
-//                for(String com:cmd) {
-//                    Method method = c.getDeclaredMethod(commands[0], null);
-//                method.setAccessible(true);
-//                String result =(String) method.invoke(obj, null);
-//                variableWithData.put(variable, Collections.singletonList(result));
-//                }
-            } catch (InstantiationException e) {
-                throw new RuntimeException(e);
-            } catch (IllegalAccessException e) {
-                throw new RuntimeException(e);
+           String cmd[] =command.split("\\s+");
+            if(cmd[0].equalsIgnoreCase("dork")){
+                try {
+             //       variableWithData.put(variable,dorkCommand.dorkQuery(cmd[1],Integer.valueOf(cmd[2])));
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
             }
-              catch (Exception e){
-            throw new RuntimeException(e);
-
-        }
+        });
+        variableWithData.forEach((k,v)->{
+            System.out.println(k + "  " + v);
         });
     }
 
