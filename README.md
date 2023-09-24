@@ -15,7 +15,8 @@ Dorkshell requires [Java](https://www.oracle.com/java/technologies/javase/jdk17-
 Download Java17 and install on system.
 
 ```sh
-git clone dillinger
-java -jar  i
+git git clone --branch executable https://github.com/prashant-one/dorkshell.git
+cd dorkshell/dowanload/
+java -jar dorkshell-0.0.1-SNAPSHOT.jar
 
 ```
