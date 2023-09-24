@@ -1,7 +1,7 @@
-package com.prashant.javashell.command;
+package com.prashant.dorkshell.command;
 
-import com.prashant.javashell.action.DorkAction;
-import com.prashant.javashell.utils.Utils;
+import com.prashant.dorkshell.action.DorkAction;
+import com.prashant.dorkshell.utils.Utils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.shell.standard.ShellComponent;
 import org.springframework.shell.standard.ShellMethod;
@@ -58,9 +58,8 @@ public class DorkCommand {
         dorkAction.getDorkByFile(filePath);
     }
 
-    @ShellMethod(key = "dork-all", value = "Dork Google to find files with given extension, Example: dork-type java pdf")
-    public void dorkAll(@ShellOption(value = {"-c", "--count"}, defaultValue = "1") int count,
-                        @ShellOption(value = {"-s", "--sleep"}, defaultValue = "1000") int sleep) throws IOException, URISyntaxException {
+    @ShellMethod(key = "dork-all", value = "Dork Google to find files with given extension, Example: dork-all")
+    public void dorkAll() throws IOException {
         dorkAction.getAllDork();
     }
 

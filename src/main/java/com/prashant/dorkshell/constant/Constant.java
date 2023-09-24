@@ -1,4 +1,4 @@
-package com.prashant.javashell.constant;
+package com.prashant.dorkshell.constant;
 
 public class Constant {
     public static final String GOOGLE_URL="https://www.google.com";

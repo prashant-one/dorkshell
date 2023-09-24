@@ -1,9 +1,9 @@
-package com.prashant.javashell.action;
+package com.prashant.dorkshell.action;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import com.prashant.javashell.constant.Constant;
-import com.prashant.javashell.utils.Utils;
+import com.prashant.dorkshell.constant.Constant;
+import com.prashant.dorkshell.utils.Utils;
 import jakarta.validation.constraints.NotNull;
 import lombok.extern.slf4j.Slf4j;
 import org.jline.reader.LineReader;
@@ -15,17 +15,18 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
+import org.springframework.util.FileCopyUtils;
 
 import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static com.prashant.javashell.constant.Constant.ANSI_RED;
-import static com.prashant.javashell.constant.Constant.ANSI_RESET;
-import static com.prashant.javashell.utils.Utils.withCounter;
+import static com.prashant.dorkshell.constant.Constant.ANSI_RED;
+import static com.prashant.dorkshell.constant.Constant.ANSI_RESET;
+import static com.prashant.dorkshell.utils.Utils.withCounter;
 
 @Service
 @Slf4j
@@ -200,8 +201,11 @@ public class DorkAction {
 
     public List<String> getDork(String key,String ext){
         List<String> storeDorkUrls = new ArrayList<>();
-        try(FileReader fileReader= new FileReader(dorkUrlList.getFile())){
-            JsonObject dorkUrlJson = JsonParser.parseReader(fileReader).getAsJsonObject();
+
+        try{
+            byte[] dataArr = FileCopyUtils.copyToByteArray(dorkUrlList.getInputStream());
+            String dorkFile = new String(dataArr, StandardCharsets.UTF_8);
+            JsonObject dorkUrlJson = JsonParser.parseString(dorkFile).getAsJsonObject();
             Set<String> keys = dorkUrlJson.keySet();
             keys.forEach(it->{
                 String result = dorkUrlJson.get(it).getAsJsonObject().get("dork").getAsString();
@@ -222,9 +226,9 @@ public class DorkAction {
         });
     }
 
-    public void getAllDork() throws URISyntaxException, IOException {
+    public void getAllDork() throws  IOException {
         File[] fileList = (new File(Objects.requireNonNull(
-                getClass().getResource("/db/dork-db")).toURI())).listFiles();
+                getClass().getResource("/db/dork-db")).getPath())).listFiles();
         List<File> dorkList = Arrays.stream(fileList).collect(Collectors.toList());
         System.out.println(ANSI_RED+"Please enter number to execute dork"+ANSI_RESET);
         dorkList.forEach(withCounter((i,dork)->{
@@ -232,7 +236,7 @@ public class DorkAction {
                     +ANSI_RESET+ Arrays.stream(dork.getName().split(".txt")).findFirst().get()));
         }));
         System.out.println();
-        System.out.println("Please enter number:");
+        System.out.println(ANSI_RED+"Please enter number:"+ANSI_RESET);
         int value = Integer.parseInt(this.lineReader.readLine());
         getDorkByFile(dorkList.get(value).getPath());
 

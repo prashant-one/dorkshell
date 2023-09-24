@@ -1,7 +1,7 @@
-package com.prashant.javashell.action;
+package com.prashant.dorkshell.action;
 
-import com.prashant.javashell.command.BasicCommand;
-import com.prashant.javashell.command.DorkCommand;
+import com.prashant.dorkshell.command.BasicCommand;
+import com.prashant.dorkshell.command.DorkCommand;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

@@ -1,8 +1,7 @@
-package com.prashant.javashell.command;
+package com.prashant.dorkshell.command;
 
-import com.prashant.javashell.action.PipelineAction;
+import com.prashant.dorkshell.action.PipelineAction;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.shell.standard.ShellComponent;
 import org.springframework.shell.standard.ShellMethod;
 
 

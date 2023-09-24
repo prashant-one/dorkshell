@@ -1,4 +1,4 @@
-package com.prashant.javashell.provider;
+package com.prashant.dorkshell.provider;
 
 import org.jline.utils.AttributedString;
 import org.jline.utils.AttributedStyle;

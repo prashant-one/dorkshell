@@ -1,6 +1,6 @@
-package com.prashant.javashell.command;
+package com.prashant.dorkshell.command;
 
-import com.prashant.javashell.action.SearchAction;
+import com.prashant.dorkshell.action.SearchAction;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.shell.standard.ShellComponent;
 import org.springframework.shell.standard.ShellMethod;

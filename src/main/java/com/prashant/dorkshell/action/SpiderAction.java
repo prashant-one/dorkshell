@@ -1,7 +1,7 @@
-package com.prashant.javashell.action;
+package com.prashant.dorkshell.action;
 
-import com.prashant.javashell.command.BasicCommand;
-import com.prashant.javashell.utils.Utils;
+import com.prashant.dorkshell.command.BasicCommand;
+import com.prashant.dorkshell.utils.Utils;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;

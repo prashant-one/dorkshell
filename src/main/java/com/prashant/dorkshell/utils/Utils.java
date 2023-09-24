@@ -1,12 +1,10 @@
-package com.prashant.javashell.utils;
+package com.prashant.dorkshell.utils;
 
 import jakarta.validation.constraints.NotNull;
 import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
 import org.springframework.stereotype.Component;
 
-import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URI;

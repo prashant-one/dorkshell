@@ -1,6 +1,6 @@
-package com.prashant.javashell.action;
+package com.prashant.dorkshell.action;
 
-import com.prashant.javashell.constant.Constant;
+import com.prashant.dorkshell.constant.Constant;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;

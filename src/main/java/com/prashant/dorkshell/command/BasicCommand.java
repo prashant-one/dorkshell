@@ -1,6 +1,6 @@
-package com.prashant.javashell.command;
+package com.prashant.dorkshell.command;
 
-import com.prashant.javashell.utils.Utils;
+import com.prashant.dorkshell.utils.Utils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
