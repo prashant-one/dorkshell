@@ -1,0 +1,5 @@
+{} -inurl:(htm|html|php|pls|txt) intitle:index.of “last modified” (mp4|wma|aac|avi)
+intitle:index.of? mkv
+intitle:index.of? mkv {}
+inurl:mp4+{}
+inurl:mkv+{}

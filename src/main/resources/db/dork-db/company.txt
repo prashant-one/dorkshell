@@ -1,0 +1,17 @@
+inurl:amazonaws.com inurl:{}
+site:amazonaws.com inurl:{}
+site:http://atlassian.net inurl:{}
+site:atlassian.net intext:{}
+site:http://github.com intext:{}
+site:http://gitlab.com intext:{}
+site:http://pastebin.com inurl:{}
+site:http://repl.it intext:{}
+site:http://s3.amazonaws.com inurl:{}
+site:http://scribd.com intext:{}
+site:http://zoom.us inurl:{}
+site:https://docs.google.com/document/d/ password intext:{}
+site:https://docs.google.com/forms responses intext:{}
+site:https://docs.google.com/forms viewanalytics intext:{}
+site:https://docs.google.com/spreadsheets edit intext:{}
+site:https://docs.google.com/spreadsheets responses intext:{}
+site:https://docs.google.com/spreadsheets/d/ password intext:{}

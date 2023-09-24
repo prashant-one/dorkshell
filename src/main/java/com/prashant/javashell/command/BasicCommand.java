@@ -116,7 +116,7 @@ public class BasicCommand {
                 process.destroy();
 
         }catch(Exception e){
-            System.out.println(e.getMessage());
+            System.err.println(e.getMessage());
         }finally {
             assert process != null;
             process.destroy();

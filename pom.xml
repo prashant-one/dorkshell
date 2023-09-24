@@ -38,6 +38,11 @@
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
 		</dependency>
+		<dependency>
+			<groupId>org.projectlombok</groupId>
+			<artifactId>lombok</artifactId>
+			<scope>compile</scope>
+		</dependency>
 	</dependencies>
 	<dependencyManagement>
 		<dependencies>
@@ -49,8 +54,7 @@
 				<scope>import</scope>
 			</dependency>
 			<!-- https://mvnrepository.com/artifact/org.jsoup/jsoup -->
-			
-
+			<!-- https://mvnrepository.com/artifact/org.projectlombok/lombok -->
 		</dependencies>
 	</dependencyManagement>
 

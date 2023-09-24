@@ -3,11 +3,12 @@ package com.prashant.javashell.command;
 import com.prashant.javashell.action.DorkAction;
 import com.prashant.javashell.utils.Utils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.io.Resource;
 import org.springframework.shell.standard.ShellComponent;
 import org.springframework.shell.standard.ShellMethod;
 import org.springframework.shell.standard.ShellOption;
+
+import java.io.IOException;
+import java.net.URISyntaxException;
 
 @ShellComponent
 public class DorkCommand {
@@ -42,6 +43,28 @@ public class DorkCommand {
                             @ShellOption(value = {"-s", "--sleep"}, defaultValue = "1000") int sleep) {
             dorkAction.dorkImageSearch(key, count, sleep);
 
+    }
+
+    @ShellMethod(key = "dork-file", value = "Dork Google to find files with given extension, Example: dork-type java pdf")
+    public void dorkFile(@ShellOption(value = {"-k", "--keyword"},defaultValue = ShellOption.NULL) String key,
+                          @ShellOption(value = {"-e","--extension"},defaultValue = ShellOption.NULL) String ext,
+                          @ShellOption(value = {"-c", "--count"}, defaultValue = "1") int count,
+                          @ShellOption(value = {"-s", "--sleep"}, defaultValue = "1000") int sleep) {
+            dorkAction.dorkFileSearch(key,ext, count, sleep);
+    }
+
+    @ShellMethod(key = "dork-file-get", value = "Dork Google to find files with given extension, Example: dork-type java pdf")
+    public void dorkFiles(@ShellOption(value = {"-f", "--filePath"}) String filePath,
+                         @ShellOption(value = {"-e","--extension"},defaultValue = ShellOption.NULL) String ext,
+                         @ShellOption(value = {"-c", "--count"}, defaultValue = "1") int count,
+                         @ShellOption(value = {"-s", "--sleep"}, defaultValue = "1000") int sleep) throws IOException {
+        dorkAction.getDorkByFile(filePath);
+    }
+
+    @ShellMethod(key = "dork-all", value = "Dork Google to find files with given extension, Example: dork-type java pdf")
+    public void dorkAll(@ShellOption(value = {"-c", "--count"}, defaultValue = "1") int count,
+                        @ShellOption(value = {"-s", "--sleep"}, defaultValue = "1000") int sleep) throws IOException, URISyntaxException {
+        dorkAction.getAllDork();
     }
 
 }

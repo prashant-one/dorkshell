@@ -1,15 +1,24 @@
 package com.prashant.javashell.utils;
 
+import jakarta.validation.constraints.NotNull;
 import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
 import org.springframework.stereotype.Component;
 
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 @Component
@@ -64,5 +73,14 @@ public class Utils {
                         || it.contains("JPEG")
                         || it.contains("jpeg"))
                 .collect(Collectors.toSet());
+    }
+
+    public List<String> readFile(@NotNull String filePath) throws IOException {
+        return Files.readAllLines(Paths.get(filePath));
+    }
+
+    public static <T> Consumer<T> withCounter(BiConsumer<Integer, T> consumer) {
+        AtomicInteger counter = new AtomicInteger(0);
+        return item -> consumer.accept(counter.getAndIncrement(), item);
     }
 }
