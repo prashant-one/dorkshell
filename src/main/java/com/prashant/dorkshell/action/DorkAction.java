@@ -112,9 +112,9 @@ public class DorkAction {
 
     private List<String> collectNextLinks(Elements elements, int count) {
         return elements.stream()
-                .map((@NotNull var it) -> it.attr("href"))
-                .filter((@NotNull var it) -> it.contains("&start=" + count + "0&sa="))
-                .map((@NotNull var it) -> Constant.GOOGLE_URL + it)
+                .map(( var it) -> it.attr("href"))
+                .filter(( var it) -> it.contains("&start=" + count + "0&sa="))
+                .map(( var it) -> Constant.GOOGLE_URL + it)
                 .distinct()
                 .collect(Collectors.toList());
     }

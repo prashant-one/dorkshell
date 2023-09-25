@@ -20,3 +20,14 @@ cd dorkshell/dowanload/
 java -jar dorkshell-0.0.1-SNAPSHOT.jar
 
 ```
+## Project run
+
+Dorkshell requires [Java](https://www.oracle.com/java/technologies/javase/jdk17-archive-downloads.html) v17 to run.
+Download Java17 and install on system.
+
+```sh
+git clone https://github.com/prashant-one/dorkshell.git
+cd dorkshell/
+mvn spring-boot:run
+
+```
