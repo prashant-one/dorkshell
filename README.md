@@ -31,3 +31,5 @@ cd dorkshell/
 mvn spring-boot:run
 
 ```
+## help
+![img.png](src/main/resources/banner/img/img.png)
